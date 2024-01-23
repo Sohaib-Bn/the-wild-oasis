@@ -1,5 +1,5 @@
 import { useAllUsers } from "../../features/authentication/useAllUsers";
-import UserRow from "./userRow";
+import UserRow from "./UserRow";
 import Spinner from "../../ui/Spinner";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
