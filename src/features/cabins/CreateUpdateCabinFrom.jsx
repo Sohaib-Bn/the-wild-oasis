@@ -5,13 +5,13 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 import Box from "../../ui/Box";
+import Checkbox from "../../ui/Checkbox";
 // import Checkbox from "../../ui/Checkbox";
 
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useUpdateCabin } from "./useUpdateCabin";
 import { useState } from "react";
-import Checkbox from "../../ui/CheckBox";
 
 function CreateUpdateCabinForm({
   cabinToUpdate = {},
