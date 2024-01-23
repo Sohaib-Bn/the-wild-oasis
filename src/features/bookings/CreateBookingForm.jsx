@@ -11,6 +11,7 @@ import Spinner from "../../ui/Spinner";
 import SpinnerMini from "../../ui/SpinnerMini";
 import Box from "../../ui/Box";
 import Warning from "../../ui/Warning";
+import Checkbox from "../../ui/Checkbox";
 
 import { useCabins } from "../cabins/useCabins";
 import { formatCurrency } from "../../utils/helpers";
@@ -21,7 +22,6 @@ import { addDays, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useCreateBooking } from "./useCreateBooking";
 import { useNavigate } from "react-router-dom";
 import { useBookings } from "./useBookings";
-import Checkbox from "../../ui/CheckBox";
 
 function CreateBookingForm() {
   const [selectedCabinId, setSelectedCabinId] = useState("");

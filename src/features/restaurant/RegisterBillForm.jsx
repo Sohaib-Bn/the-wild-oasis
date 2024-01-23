@@ -4,7 +4,7 @@ import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
 import Box from "../../ui/Box";
-import CheckBox from "../../ui/CheckBox";
+import CheckBox from "../../ui/Checkbox";
 import DynamicInputsComponent from "../../ui/DynamicInputsComponent";
 import Select from "../../ui/Select";
 import Spinner from "../../ui/Spinner";
