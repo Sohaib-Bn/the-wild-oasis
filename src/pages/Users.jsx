@@ -1,7 +1,7 @@
 import Heading from "../ui/Heading";
 import SignupForm from "../features/authentication/SignupForm";
 import Row from "../ui/Row";
-import UsersTable from "../features/authentication/usersTable";
+import UsersTable from "../features/authentication/UsersTable";
 import Stacked from "../ui/Stacked";
 import { useUser } from "../features/authentication/useUser";
 import Warning from "../ui/Warning";
