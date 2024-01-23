@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
+import SpinnerMini from "./SpinnerMini";
 
 const StyledConfirmDelete = styled.div`
   width: 40rem;
@@ -42,7 +43,7 @@ function ConfirmDelete({ resource, onConfirm, disabled, onCloseModal }) {
           onClick={handleConfirmClick}
           disabled={disabled}
         >
-          Delete
+          {disabled ? <SpinnerMini /> : "Delete"}
         </Button>
       </div>
     </StyledConfirmDelete>

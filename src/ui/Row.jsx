@@ -4,6 +4,12 @@ const Row = styled.div`
   display: flex;
 
   ${(props) =>
+    props.$gap &&
+    css`
+      gap: ${props.$gap}rem;
+    `}
+
+  ${(props) =>
     props.$type === "horizontal" &&
     css`
       justify-content: space-between;
@@ -12,6 +18,7 @@ const Row = styled.div`
 
   ${(props) =>
     props.$type === "vertical" &&
+    !props.$gap &&
     css`
       flex-direction: column;
       gap: 1.6rem;

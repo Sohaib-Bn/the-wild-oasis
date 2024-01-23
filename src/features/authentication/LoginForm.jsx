@@ -8,9 +8,9 @@ import SpinnerMini from "../../ui/SpinnerMini";
 
 function LoginForm() {
   const [email, setEmail] = useState("sohaibbusinessbn@gmail.com");
-  const [password, setPassword] = useState("sohaib business");
+  const [password, setPassword] = useState("sohaib support");
 
-  const { isLoading, login } = useLogin();
+  const { isPending, login } = useLogin();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,6 +30,7 @@ function LoginForm() {
     <Form onSubmit={handleSubmit}>
       <FormRowVertical label="Email address">
         <Input
+          disabled={isPending}
           type="email"
           id="email"
           // This makes this form better for password managers
@@ -40,6 +41,7 @@ function LoginForm() {
       </FormRowVertical>
       <FormRowVertical label="Password">
         <Input
+          disabled={isPending}
           type="password"
           id="password"
           autoComplete="current-password"
@@ -48,8 +50,8 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLoading}>
-          {isLoading ? <SpinnerMini /> : "Login"}
+        <Button size="large" disabled={isPending}>
+          {isPending ? <SpinnerMini /> : "Login"}
         </Button>
       </FormRowVertical>
     </Form>

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 export function useUpadteSetting() {
   const queryClient = useQueryClient();
-  const { isLoading: isUpdating, mutate: updateSetting } = useMutation({
+  const { isPending: isUpdating, mutate: updateSetting } = useMutation({
     mutationFn: updateSettingApi,
     onSuccess: () => {
       toast.success("Settings successfully updated");

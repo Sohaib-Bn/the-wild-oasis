@@ -9,27 +9,36 @@ import Input from "../../ui/Input";
 import { useUser } from "./useUser";
 import { useUpdateUser } from "./useUpdateUser";
 import SpinnerMini from "../../ui/SpinnerMini";
+import Select from "../../ui/Select";
+import { useAllUsers } from "./useAllUsers";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  const { user: { email, user_metadata: { fullname: currentFullname } } = {} } =
-    useUser();
-  const { isLoading: isUpdating, updateUser } = useUpdateUser();
+  const {
+    user: {
+      email,
+      user_metadata: { fullname: currentFullname, role: currRole },
+    } = {},
+  } = useUser();
+
+  const { numAdminsUsers } = useAllUsers();
+  const { isPending: isUpdating, updateUser } = useUpdateUser();
 
   const [fullname, setFullname] = useState(currentFullname);
   const [avatar, setAvatar] = useState(null);
+  const [role, setRole] = useState(currRole);
 
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!fullname) return;
-    updateUser({ fullname, avatar });
-    handleClear();
+    updateUser({ fullname, avatar, role });
   }
 
   function handleClear() {
     setFullname(currentFullname);
     setAvatar(null);
+    setRole(currRole);
   }
 
   return (
@@ -37,6 +46,32 @@ function UpdateUserDataForm() {
       <FormRow label="Email address">
         <Input value={email} disabled />
       </FormRow>
+      <FormRow
+        warning={
+          currRole === "admin" &&
+          numAdminsUsers === 1 &&
+          "Should be at least one admin account"
+        }
+        label="Role"
+      >
+        <Select
+          disabled={currRole !== "admin" || numAdminsUsers === 1 || isUpdating}
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          options={[
+            {
+              label: "admin",
+              value: "admin",
+            },
+
+            {
+              label: "regular",
+              value: "regular",
+            },
+          ]}
+        />
+      </FormRow>
+
       <FormRow label="Full name">
         <Input
           type="text"
@@ -54,7 +89,7 @@ function UpdateUserDataForm() {
           disabled={isUpdating}
         />
       </FormRow>
-      <FormRow>
+      <FormRow type="submit">
         <Button
           onClick={handleClear}
           disabled={isUpdating}

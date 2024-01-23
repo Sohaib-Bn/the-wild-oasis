@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "react-hot-toast";
 
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
@@ -13,9 +14,10 @@ import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./ui/AppLayout";
 import GlobalStyles from "./styles/GlobalStyles";
-import { Toaster } from "react-hot-toast";
 import Booking from "./pages/Booking";
 import CheckIn from "./pages/CheckIn";
+import CreateBookin from "./features/bookings/CreateBookin";
+import Restaurant from "./pages/Restaurant";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,11 +46,13 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/cabins" element={<Cabins />} />
             <Route path="/bookings" element={<Bookings />} />
+            <Route path="/booking/new" element={<CreateBookin />} />
             <Route path="/booking/:bookingId" element={<Booking />} />
             <Route path="/check-in/:bookingId" element={<CheckIn />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/account" element={<Account />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/restaurant" element={<Restaurant />} />
           </Route>
 
           <Route path="/login" element={<Login />} />

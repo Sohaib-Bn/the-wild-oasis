@@ -67,8 +67,8 @@ function BookingRow({
   };
 
   const navigate = useNavigate();
-  const { isLoading: isCheckingout, checkout } = useCheckout();
-  const { isLoading: isDeleting, deleteBooking } = useDeleteBooking();
+  const { isPending: isCheckingout, checkout } = useCheckout();
+  const { isPending: isDeleting, deleteBooking } = useDeleteBooking();
 
   return (
     <>

@@ -4,16 +4,26 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
+import Box from "../../ui/Box";
+// import Checkbox from "../../ui/Checkbox";
 
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useUpdateCabin } from "./useUpdateCabin";
+import { useState } from "react";
+import Checkbox from "../../ui/CheckBox";
 
-function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
-  const { id: updateId, ...updateValues } = cabinToEdit;
+function CreateUpdateCabinForm({
+  cabinToUpdate = {},
+  onCloseModal,
+  cabinBookings,
+}) {
+  const { id: updateId, status, ...updateValues } = cabinToUpdate;
+  const [isOutOfService, setIsOutOfService] = useState(
+    status === "unavailable"
+  );
 
   const isUpdateSession = Boolean(updateId);
-
   const isTypeModel = Boolean(onCloseModal);
 
   const {
@@ -33,12 +43,19 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
+    data = {
+      ...data,
+      status: isOutOfService ? "unavailable" : "idel",
+    };
 
     if (isUpdateSession)
       updateCabin(
-        { newCabinData: { ...data, image }, id: updateId },
         {
-          onSuccess: (data) => {
+          newCabinData: { ...data, image },
+          id: updateId,
+        },
+        {
+          onSuccess: () => {
             reset();
             onCloseModal?.();
           },
@@ -48,7 +65,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
       createCabin(
         { ...data, image: image },
         {
-          onSuccess: (data) => {
+          onSuccess: () => {
             reset();
             onCloseModal?.();
           },
@@ -58,7 +75,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
 
   return (
     <Form
-      type={isTypeModel ? "modal" : "regular"}
+      $type={isTypeModel ? "modal" : "regular"}
       onSubmit={handleSubmit(onSubmit)}
     >
       <FormRow label="Cabin name" error={errors.name?.message}>
@@ -119,9 +136,10 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
 
       <FormRow label="Descritpion" error={errors.description?.message}>
         <Textarea
+          disabled={isWorking}
           type="number"
           id="description"
-          {...register("description", { required: "Description is required" })}
+          {...register("description")}
         />
       </FormRow>
 
@@ -136,7 +154,34 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
         />
       </FormRow>
 
-      <FormRow>
+      <FormRow
+        warning={
+          cabinBookings?.length
+            ? `Can not set booked cabin out of service (Booking${
+                cabinBookings.length !== 1 ? "s" : ""
+              } ${cabinBookings.map((booking) => `#${booking.id}`).join(", ")})`
+            : ""
+        }
+        orientation="vertical"
+      >
+        <Box>
+          <Checkbox
+            type="bold"
+            disabled={
+              isWorking ||
+              cabinToUpdate.status === "active" ||
+              cabinBookings?.length
+            }
+            id="isOutOfServie"
+            checked={isOutOfService}
+            onChange={() => setIsOutOfService((state) => !state)}
+          >
+            Is out of service (Under Maintenance)
+          </Checkbox>
+        </Box>
+      </FormRow>
+
+      <FormRow type="submit">
         <Button
           onClick={() => onCloseModal?.(false)}
           $variation="secondary"
@@ -156,4 +201,4 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   );
 }
 
-export default CreateCabinForm;
+export default CreateUpdateCabinForm;

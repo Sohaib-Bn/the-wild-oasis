@@ -13,15 +13,22 @@ const StyledSelect = styled.select`
   font-weight: 500;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
+
+  & option:checked + option[disabled]:first-of-type {
+    color: #999;
+    font-style: italic;
+  }
 `;
 
-function Select({ options, value, onChange, ...props }) {
+function Select({ options, value, onChange, register, disabled, ...props }) {
   return (
-    <StyledSelect onChange={onChange} value={value} {...props}>
+    <StyledSelect onChange={onChange} value={value} {...props} {...register}>
       {options.map((option) => (
-        <option value={option.value} key={option.value}>
-          {option.label}
-        </option>
+        <option
+          dangerouslySetInnerHTML={{ __html: option.label }}
+          value={option.value}
+          key={option.value}
+        />
       ))}
     </StyledSelect>
   );

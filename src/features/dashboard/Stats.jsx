@@ -23,7 +23,7 @@ function Stats({
   );
 
   // 3. CHCKED IN
-  const chckedin = confirmedStaysAfterDate?.length;
+  const stays = confirmedStaysAfterDate?.length;
 
   // 4. OCCUPATION
   // NUM OF CHECKED NIGHTS / ALL AVAILABLES NIGHTS
@@ -51,8 +51,8 @@ function Stats({
         color="green"
       />
       <Stat
-        value={chckedin}
-        title="Check in"
+        value={stays}
+        title="Stays"
         icon={<HiOutlineCalendarDays />}
         color="indigo"
       />

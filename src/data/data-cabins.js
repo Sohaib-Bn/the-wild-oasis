@@ -5,6 +5,7 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabin-images/`;
 export const cabins = [
   {
     name: "001",
+    status: "idel",
     maxCapacity: 2,
     regularPrice: 250,
     discount: 0,
@@ -14,6 +15,7 @@ export const cabins = [
   },
   {
     name: "002",
+    status: "idel",
     maxCapacity: 2,
     regularPrice: 350,
     discount: 25,
@@ -23,6 +25,7 @@ export const cabins = [
   },
   {
     name: "003",
+    status: "idel",
     maxCapacity: 4,
     regularPrice: 300,
     discount: 0,
@@ -32,6 +35,7 @@ export const cabins = [
   },
   {
     name: "004",
+    status: "idel",
     maxCapacity: 4,
     regularPrice: 500,
     discount: 50,
@@ -41,6 +45,7 @@ export const cabins = [
   },
   {
     name: "005",
+    status: "idel",
     maxCapacity: 6,
     regularPrice: 350,
     discount: 0,
@@ -50,6 +55,7 @@ export const cabins = [
   },
   {
     name: "006",
+    status: "idel",
     maxCapacity: 6,
     regularPrice: 800,
     discount: 100,
@@ -59,6 +65,7 @@ export const cabins = [
   },
   {
     name: "007",
+    status: "idel",
     maxCapacity: 8,
     regularPrice: 600,
     discount: 100,
@@ -68,6 +75,7 @@ export const cabins = [
   },
   {
     name: "008",
+    status: "idel",
     maxCapacity: 10,
     regularPrice: 1400,
     discount: 0,

@@ -35,8 +35,8 @@ function CheckinBooking() {
     if (booking?.isPaid) setIsPaid(true);
   }, [booking]);
 
-  const { isLoading: isUpdating, checkinBooking } = useCheckin();
-  const { isLoading: isLoadingSettings, settings } = useSettings();
+  const { isPending: isUpdating, checkinBooking } = useCheckin();
+  const { isPending: isLoadingSettings, settings } = useSettings();
 
   if (isLoading || isUpdating || isLoadingSettings) return <Spinner />;
 
@@ -46,9 +46,11 @@ function CheckinBooking() {
     totalPrice,
     hasBreakfast,
     numNights,
+    numGuests,
   } = booking;
 
-  const breafastPrice = Number(numNights) * Number(settings?.breakfastPrice);
+  const breafastPrice =
+    Number(numNights) * Number(numGuests) * Number(settings?.breakfastPrice);
 
   function handleCheckin() {
     if (isPaid) {

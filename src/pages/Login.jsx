@@ -17,7 +17,13 @@ function Login() {
   return (
     <LoginLayout>
       <Logo />
-      <Heading as="h4">Login to your account</Heading>
+      <div
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <Heading as="h4">Login to your account</Heading>
+      </div>
       <LoginForm />
     </LoginLayout>
   );

@@ -11,7 +11,7 @@ function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUser, isLoading: isUpdating } = useUpdateUser();
+  const { updateUser, isPending: isUpdating } = useUpdateUser();
 
   function onSubmit({ password }) {
     updateUser({ password }, { onSettled: () => reset() });
@@ -54,7 +54,7 @@ function UpdatePasswordForm() {
           })}
         />
       </FormRow>
-      <FormRow>
+      <FormRow type="submit">
         <Button
           disabled={isUpdating}
           onClick={reset}

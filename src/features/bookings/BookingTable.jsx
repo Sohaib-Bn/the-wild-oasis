@@ -3,14 +3,12 @@ import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useBookings } from "./useBookings";
 import Spinner from "../../ui/Spinner";
-import toast from "react-hot-toast";
 import Pagination from "../../ui/Pagination";
 
 function BookingTable() {
-  const { bookings, isLoading, error, count } = useBookings();
+  const { bookings, isLoading, count } = useBookings();
 
   if (isLoading) return <Spinner />;
-  if (error) toast.error(error.message);
 
   return (
     <Menus>

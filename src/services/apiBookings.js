@@ -7,11 +7,11 @@ export async function getBookings(filter, sort, page) {
     .from("bookings")
     .select("*, guests(fullName, email), cabins(name)", { count: "exact" });
 
-  // FILTER
+  // FILTERING
 
   if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
 
-  // SORT
+  // SORTING
 
   if (sort)
     query = query.order(sort.field, {
@@ -127,5 +127,85 @@ export async function deleteBooking(id) {
     console.error(error);
     throw new Error("Booking could not be deleted");
   }
+  return data;
+}
+
+export async function createBooking(bookingData) {
+  // 1. PREPARING DATA
+  const {
+    fullName,
+    email,
+    nationalID,
+    nationality,
+
+    numNights,
+    numGuests,
+    observations,
+    startDate,
+    endDate,
+    cabinPrice,
+    cabinId,
+    totalPrice,
+    extrasPrice,
+    status,
+    isPaid,
+    hasBreakfast,
+  } = bookingData;
+
+  // 2. CREATE COUNTRY FLAG
+
+  const res = await fetch(`https://restcountries.com/v3.1/name/${nationality}`);
+
+  if (!res.ok) throw new Error("Nationality is invalid");
+
+  const countryData = await res.json();
+
+  // 3. CREATE NEW GUEST
+
+  const { data: guestData, error: guestsError } = await supabase
+    .from("guests")
+    .insert([
+      {
+        fullName,
+        email,
+        nationalID,
+        nationality,
+        countryFlag: countryData[0].flags.svg,
+      },
+    ])
+    .select()
+    .single();
+
+  if (guestsError) throw new Error("Booking could not be created ");
+
+  // 4. CREATE NEW BOOKING
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert([
+      {
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
+        numGuests,
+        numNights,
+        cabinPrice,
+        totalPrice,
+        status,
+        isPaid,
+        hasBreakfast,
+        cabinId,
+        guestId: guestData.id,
+        extrasPrice,
+        observations,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error.message);
+    throw new Error("Booking could not be created ");
+  }
+
   return data;
 }

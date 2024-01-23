@@ -3,14 +3,13 @@ import { singupUser } from "../../services/apiAuth";
 import toast from "react-hot-toast";
 
 export function useSignup() {
-  const { isLoading, mutate: signup } = useMutation({
-    mutationFn: ({ email, password, fullname }) =>
-      singupUser({ email, password, fullname }),
+  const { isPending, mutate: signup } = useMutation({
+    mutationFn: singupUser,
     onSuccess: () => {
-      toast.success("Verify your email address ");
+      toast.success("Verify the email address ");
     },
     onError: (err) => toast.error(err.message),
   });
 
-  return { isLoading, signup };
+  return { isPending, signup };
 }

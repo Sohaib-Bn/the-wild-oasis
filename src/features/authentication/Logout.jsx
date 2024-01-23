@@ -4,15 +4,15 @@ import { useLogout } from "./useLogout";
 import SpinnerMini from "../../ui/SpinnerMini";
 
 function Logout() {
-  const { isLoading, logout } = useLogout();
+  const { isPending, logout } = useLogout();
   return (
     <ButtonIcon
-      disabled={isLoading}
+      disabled={isPending}
       onClick={() => {
         logout();
       }}
     >
-      {isLoading ? <SpinnerMini /> : <HiArrowRightOnRectangle />}
+      {isPending ? <SpinnerMini /> : <HiArrowRightOnRectangle />}
     </ButtonIcon>
   );
 }

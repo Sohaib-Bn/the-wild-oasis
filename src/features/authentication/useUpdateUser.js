@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 export function useUpdateUser() {
   const queryClient = useQueryClient();
 
-  const { isLoading, mutate: updateUser } = useMutation({
+  const { mutate: updateUser, isPending } = useMutation({
     mutationFn: updateUserApi,
     onSuccess: () => {
       toast.success("Your Account successfully updated");
@@ -14,5 +14,5 @@ export function useUpdateUser() {
     onError: () => toast.error("There was problem. Try again"),
   });
 
-  return { isLoading, updateUser };
+  return { isPending, updateUser };
 }

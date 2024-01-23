@@ -27,8 +27,8 @@ const HeadingGroup = styled.div`
 
 function BookingDetail() {
   const { isLoading, booking = {}, error } = useBooking();
-  const { isLoading: isCheckingout, checkout } = useCheckout();
-  const { isLoading: isDeleting, deleteBooking } = useDeleteBooking();
+  const { isPending: isCheckingout, checkout } = useCheckout();
+  const { isPending: isDeleting, deleteBooking } = useDeleteBooking();
 
   const { status, id: bookingId } = booking;
 

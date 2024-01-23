@@ -1,8 +1,16 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledCheckbox = styled.div`
   display: flex;
   gap: 1.6rem;
+
+  ${(props) =>
+    props.$type === "bold" &&
+    css`
+      & label {
+        font-weight: 500;
+      }
+    `}
 
   & input[type="checkbox"] {
     height: 2.4rem;
@@ -25,9 +33,17 @@ const StyledCheckbox = styled.div`
   }
 `;
 
-function Checkbox({ checked, onChange, disabled = false, id, children }) {
+function Checkbox({
+  checked,
+  onChange,
+  disabled = false,
+  id,
+  children,
+  type,
+  regiser,
+}) {
   return (
-    <StyledCheckbox>
+    <StyledCheckbox $type={type}>
       <input
         type="checkbox"
         id={id}

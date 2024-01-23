@@ -1,4 +1,4 @@
-import supabase, { supabaseUrl } from "./supabase";
+import supabase, { supabaseAdminAuthClient, supabaseUrl } from "./supabase";
 
 export async function loginUser({ email, password }) {
   let { data, error } = await supabase.auth.signInWithPassword({
@@ -21,13 +21,21 @@ export async function logoutUser() {
   }
 }
 
-export async function singupUser({ email, password, fullname }) {
+export async function singupUser({
+  email,
+  password,
+  fullname,
+  role,
+  created_with,
+}) {
   let { data, error } = await supabase.auth.signUp({
     email: email,
     password: password,
     options: {
       data: {
         fullname: fullname,
+        role: role,
+        created_with: created_with,
         avatar: "",
       },
     },
@@ -56,15 +64,18 @@ export async function getCurrentUser() {
   return user;
 }
 
-export async function updateUser({ fullname, avatar, password }) {
-  // 1. UPDATE USER FULLNAME OR PASSWORD
+export async function updateUser({ fullname, avatar, password, role }) {
+  // 1. UPDATE USER FULLNAME AND ROLE (ONLY ADMINS) OR PASSWORD
   let updatedField;
-  if (fullname)
+
+  if (fullname || role)
     updatedField = {
       data: {
         fullname: fullname,
+        role: role,
       },
     };
+
   if (password) updatedField = { password: password };
 
   const { data, error: error1 } = await supabase.auth.updateUser(updatedField);
@@ -94,4 +105,48 @@ export async function updateUser({ fullname, avatar, password }) {
   if (error3) throw new Error(error3.message);
 
   return updatedUser;
+}
+
+/////////////////////////////////////////////////////////////
+// WARNING: DON'T USED THIS IN REAL WORD
+// INSTED THAT CODE SHOULD BE IN SERVER SIDE
+
+export async function getAllUsers() {
+  const {
+    data: { users },
+    error,
+  } = await supabaseAdminAuthClient.listUsers();
+
+  if (error) throw new Error("Users could not be loaded");
+
+  return users;
+}
+
+export async function deleteUser(id) {
+  const { data, error } = await supabaseAdminAuthClient.deleteUser(id);
+
+  if (error) throw new Error("User could not be deleted");
+
+  return data;
+}
+
+export async function updateUserById({ id, data }) {
+  let updatedField;
+  const { role } = data;
+
+  if (role)
+    updatedField = {
+      user_metadata: {
+        role: role,
+      },
+    };
+
+  const { data: user, error } = await supabase.auth.admin.updateUserById(
+    id,
+    updatedField
+  );
+
+  if (error) throw new Error("User could not be updated");
+
+  return user;
 }

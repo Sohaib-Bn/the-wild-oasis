@@ -189,15 +189,6 @@ img {
 
 
 
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-  scale: 0.85;
-  visibility: none;
-}
-
-
-
 `;
 
 export default GlobalStyles;

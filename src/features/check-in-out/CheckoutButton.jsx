@@ -2,10 +2,10 @@ import Button from "../../ui/Button";
 import { useCheckout } from "./useCheckout";
 
 function CheckoutButton({ bookingId }) {
-  const { isLoading, checkout } = useCheckout();
+  const { isPending, checkout } = useCheckout();
   return (
     <Button
-      disabled={isLoading}
+      disabled={isPending}
       onClick={() => checkout(bookingId)}
       $variation="primary"
       $size="small"

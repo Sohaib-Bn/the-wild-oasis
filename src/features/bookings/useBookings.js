@@ -3,8 +3,8 @@ import { getBookings } from "../../services/apiBookings";
 import { useSearchParams } from "react-router-dom";
 import { MAX_RESULT_PER_PAGE } from "../../utils/constants";
 
-export function useBookings() {
-  const [searchParams] = useSearchParams();
+export function useBookings(allBookings = false) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const client = useQueryClient();
 
   // FILTERING
@@ -26,20 +26,36 @@ export function useBookings() {
 
   // PAGINATION
 
-  const page = Number(searchParams.get("page")) || 1;
+  let page;
+  page = Number(searchParams.get("page")) || 1;
 
   const {
     data: { data: bookings, count } = {},
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["bookings", filterObj, sorByObj, page],
-    queryFn: () => getBookings(filterObj, sorByObj, page),
-  });
+  } = useQuery(
+    !allBookings
+      ? {
+          queryKey: ["bookings", filterObj, sorByObj, page],
+          queryFn: () => getBookings(filterObj, sorByObj, page),
+        }
+      : {
+          queryKey: ["bookings"],
+          queryFn: () => getBookings(),
+        }
+  );
+
+  if (allBookings) return { bookings, isLoading, error };
 
   // PRE-FETCHING
 
   const pageCount = Math.ceil(count / MAX_RESULT_PER_PAGE);
+
+  if (page > pageCount) {
+    page = pageCount;
+    searchParams.set("page", page);
+    setSearchParams(searchParams);
+  }
 
   if (page < pageCount)
     client.prefetchQuery({

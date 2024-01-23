@@ -5,7 +5,6 @@ export function useOutsideClick(action, listenCapturing = true) {
   useEffect(() => {
     const handleClick = function (e) {
       if (ref.current && !ref.current.contains(e.target)) {
-        console.log("click out side");
         action();
       }
     };

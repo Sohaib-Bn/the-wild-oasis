@@ -1,12 +1,13 @@
 import styled, { css } from "styled-components";
+import Warning from "./Warning";
 
 const StyledFormRow = styled.div`
   display: grid;
   align-items: center;
 
   grid-template-columns: ${(props) =>
-    props.orientation === "vertical" ? "1fr" : "24rem 1fr 1.2fr"};
-  gap: ${(props) => (props.orientation === "vertical" ? "0.8rem" : "2.4rem")};
+    props.$orientation === "vertical" ? "1fr" : "24rem 1fr 1.2fr"};
+  gap: ${(props) => (props.$orientation === "vertical" ? "0.8rem" : "2.4rem")};
 
   padding: 1.2rem 0;
 
@@ -20,25 +21,30 @@ const StyledFormRow = styled.div`
 
   &:not(:last-child) {
     border-bottom: ${(props) =>
-      props.orientation === "vertical"
+      props.$orientation === "vertical"
         ? "none"
         : "1px solid var(--color-grey-100)"};
   }
 
-  /* Special treatment if the row contains buttons, and if it's NOT a vertical row */
   ${(props) =>
-    props.orientation !== "vertical" &&
+    props.$orientation !== "vertical" &&
+    props.$type === "submit" &&
     css`
-      &:has(button) {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1.2rem;
-      }
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.2rem;
     `}
 `;
 
 const Label = styled.label`
   font-weight: 500;
+
+  ${(props) =>
+    props.$type === "dynamicInputs" &&
+    css`
+      align-self: flex-start;
+      transform: translateY(30%);
+    `}
 `;
 
 const Error = styled.span`
@@ -46,12 +52,25 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function FormRow({ label, error, children, orientation }) {
+function FormRow({
+  label,
+  error,
+  warning,
+  children,
+  orientation,
+  type,
+  warningType,
+}) {
   return (
-    <StyledFormRow orientation={orientation}>
-      {label && <Label htmlFor={children.props.id}>{label}</Label>}
+    <StyledFormRow $type={type} $orientation={orientation}>
+      {label && (
+        <Label $type={type} htmlFor={children.props.id}>
+          {label}
+        </Label>
+      )}
       {children}
       {error && <Error>{error}</Error>}
+      {warning && <Warning type={warningType}>{warning}</Warning>}
     </StyledFormRow>
   );
 }

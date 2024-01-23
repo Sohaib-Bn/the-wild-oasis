@@ -55,7 +55,6 @@ export async function createUpdateCabin(newCabin, id) {
   if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
 
   // B. Update CABIN
-
   if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
 
   const { data, error } = await query.select().single();

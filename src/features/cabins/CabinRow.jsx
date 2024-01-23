@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
@@ -9,6 +8,11 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import Spinner from "../../ui/Spinner";
+import { addDays, isWithinInterval } from "date-fns";
+import Tag from "../../ui/Tag";
+import { useEffect } from "react";
+import { useUpdateCabin } from "./useUpdateCabin";
+import CreateUpdateCabinForm from "./CreateUpdateCabinFrom";
 
 const Img = styled.img`
   display: block;
@@ -37,7 +41,7 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-function CabinRow({ cabin }) {
+function CabinRow({ cabin, bookings }) {
   const {
     id: cabinId,
     image,
@@ -46,9 +50,42 @@ function CabinRow({ cabin }) {
     regularPrice,
     discount,
     description,
+    status,
   } = cabin;
 
   const { isCreating, createCabin } = useCreateCabin();
+  const { isDeleting, deleteCabin } = useDeleteCabin();
+  // THE FIRST ARGUEMNT REFERS IF DISPLAY TOASTS OR NOT
+  const { updateCabin } = useUpdateCabin(false);
+
+  useEffect(() => {
+    if (status === "unavailable") return;
+
+    const activeBooking = bookings.find(
+      (booking) =>
+        booking.cabinId === cabinId &&
+        booking.status === "checked-in" &&
+        isWithinInterval(new Date(), {
+          start: booking.startDate,
+          end: addDays(booking.endDate, 1),
+        })
+    );
+
+    const newCabinData = activeBooking ? "active" : "idel";
+
+    if (status !== newCabinData) {
+      updateCabin({
+        id: cabinId,
+        newCabinData: { ...cabin, status: newCabinData },
+      });
+    }
+  }, [cabinId, updateCabin, bookings, cabin, status]);
+
+  if (isCreating || isDeleting) return <Spinner />;
+
+  const cabinBookings = bookings.filter(
+    (booking) => booking.cabinId === cabinId && booking.status === "unconfirmed"
+  );
 
   function handleDuplicate() {
     const dublicatedCabin = {
@@ -58,14 +95,17 @@ function CabinRow({ cabin }) {
       regularPrice,
       discount,
       description,
+      status: "idel",
     };
 
     createCabin(dublicatedCabin);
   }
 
-  const { isDeleting, deleteCabin } = useDeleteCabin();
-
-  if (isCreating || isDeleting) return <Spinner />;
+  const statusToTagName = {
+    active: "green",
+    idel: "silver",
+    unavailable: "red",
+  };
 
   return (
     <Table.Row>
@@ -78,6 +118,8 @@ function CabinRow({ cabin }) {
       ) : (
         <span>&mdash;</span>
       )}
+
+      <Tag $type={statusToTagName[status]}>{status}</Tag>
       <div>
         <Modal>
           <Menus.Menu>
@@ -88,7 +130,7 @@ function CabinRow({ cabin }) {
                 Duplicate
               </Menus.Button>
 
-              <Modal.Open opens="edit">
+              <Modal.Open opens="update">
                 <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
               </Modal.Open>
 
@@ -97,8 +139,11 @@ function CabinRow({ cabin }) {
               </Modal.Open>
             </Menus.List>
 
-            <Modal.Window name="edit">
-              <CreateCabinForm cabinToEdit={cabin} />
+            <Modal.Window name="update">
+              <CreateUpdateCabinForm
+                cabinToUpdate={cabin}
+                cabinBookings={cabinBookings}
+              />
             </Modal.Window>
 
             <Modal.Window name="delete">
