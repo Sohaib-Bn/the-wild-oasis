@@ -22,7 +22,13 @@ const StyledSelect = styled.select`
 
 function Select({ options, value, onChange, register, disabled, ...props }) {
   return (
-    <StyledSelect onChange={onChange} value={value} {...props} {...register}>
+    <StyledSelect
+      onChange={onChange}
+      value={value}
+      disabled={disabled}
+      {...props}
+      {...register}
+    >
       {options.map((option) => (
         <option
           dangerouslySetInnerHTML={{ __html: option.label }}
