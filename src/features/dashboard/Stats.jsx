@@ -17,10 +17,9 @@ function Stats({
   const bookingsLength = bookingsAfterDate?.length;
 
   // 2. SALES
-  const sales = bookingsAfterDate?.reduce(
-    (acc, curr) => acc + curr.totalPrice,
-    0
-  );
+  const sales = bookingsAfterDate
+    ?.filter((b) => b.status !== "unconfirmed")
+    .reduce((acc, curr) => acc + curr.totalPrice, 0);
 
   // 3. CHCKED IN
   const stays = confirmedStaysAfterDate?.length;

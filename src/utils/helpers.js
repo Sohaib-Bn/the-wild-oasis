@@ -1,4 +1,7 @@
+import emailjs from "emailjs-com";
+
 import { differenceInDays, formatDistance, parseISO } from "date-fns";
+
 // import { differenceInDays } from "date-fns/esm";
 // import { differenceInDays } from "date-fns/esm";
 
@@ -30,3 +33,26 @@ export const formatCurrency = (value) =>
   new Intl.NumberFormat("en", { style: "currency", currency: "USD" }).format(
     value
   );
+
+// sendEmail.js
+export async function sendThankYouEmail(send_to, html) {
+  const apiKey = "2nWf9lzoEuTzr8I4H";
+
+  const templateParams = {
+    send_to: send_to,
+    subject: "Thank You for Staying with Us!",
+    html: html,
+  };
+
+  const { text } = await emailjs.send(
+    "service_fyjqio5",
+    "template_3698odb",
+    templateParams,
+    apiKey
+  );
+
+  if (text !== "OK") {
+    console.error("Email failed to send");
+    throw new Error("Email failed to send");
+  }
+}

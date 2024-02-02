@@ -14,10 +14,11 @@ import { useBooking } from "./useBooking";
 import Spinner from "../../ui/Spinner";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useCheckout } from "../check-in-out/useCheckout";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteBooking } from "./useDeleteBooking";
+import { useSettings } from "../settings/useSettings";
+import { useBills } from "../restaurant/useBills";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -27,10 +28,12 @@ const HeadingGroup = styled.div`
 
 function BookingDetail() {
   const { isLoading, booking = {}, error } = useBooking();
-  const { isPending: isCheckingout, checkout } = useCheckout();
+  const { isLoading: isLoadingSettings, settings } = useSettings();
+  const { isLoading: isLoading2, bills = [] } = useBills();
+
   const { isPending: isDeleting, deleteBooking } = useDeleteBooking();
 
-  const { status, id: bookingId } = booking;
+  const { status, id: bookingId, numGuests, numNights } = booking;
 
   const moveBack = useMoveBack();
 
@@ -42,12 +45,15 @@ function BookingDetail() {
 
   const navigate = useNavigate();
 
-  if (isLoading || isCheckingout) return <Spinner />;
+  if (isLoading || isLoadingSettings || isLoading2) return <Spinner />;
   if (!Object.keys(booking).length) return <Empty resource="Booking" />;
   if (error) {
     toast.error(error.message);
     return;
   }
+
+  const breakfastPrice =
+    Number(numNights) * Number(numGuests) * Number(settings?.breakfastPrice);
 
   return (
     <>
@@ -59,8 +65,11 @@ function BookingDetail() {
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
       </Row>
 
-      <BookingDataBox booking={booking} />
-
+      <BookingDataBox
+        booking={booking}
+        bills={bills}
+        breakfastPrice={breakfastPrice}
+      />
       <ButtonGroup>
         <Modal>
           <Modal.Open opens="delete-booking">
@@ -85,7 +94,7 @@ function BookingDetail() {
           </Button>
         )}
         {status === "checked-in" && (
-          <Button disabled={isCheckingout} onClick={() => checkout(bookingId)}>
+          <Button onClick={() => navigate(`/check-out/${bookingId}`)}>
             Check out booking #{bookingId}
           </Button>
         )}

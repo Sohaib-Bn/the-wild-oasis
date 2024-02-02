@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
+import { Suspense } from "react";
 
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
@@ -16,8 +17,10 @@ import AppLayout from "./ui/AppLayout";
 import GlobalStyles from "./styles/GlobalStyles";
 import Booking from "./pages/Booking";
 import CheckIn from "./pages/CheckIn";
+import CheckOut from "./pages/CheckOut";
 import CreateBookin from "./features/bookings/CreateBookin";
 import Restaurant from "./pages/Restaurant";
+import SpinnerFullPage from "./ui/SpinnerFullPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,30 +37,33 @@ function App() {
       <ReactQueryDevtools />
       <GlobalStyles />
       <BrowserRouter>
-        <Routes>
-          <Route
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate replace to="/Dashboard" />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/cabins" element={<Cabins />} />
-            <Route path="/bookings" element={<Bookings />} />
-            <Route path="/booking/new" element={<CreateBookin />} />
-            <Route path="/booking/:bookingId" element={<Booking />} />
-            <Route path="/check-in/:bookingId" element={<CheckIn />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/restaurant" element={<Restaurant />} />
-          </Route>
+        <Suspense fallback={<SpinnerFullPage />}>
+          <Routes>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate replace to="/Dashboard" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/cabins" element={<Cabins />} />
+              <Route path="/bookings" element={<Bookings />} />
+              <Route path="/booking/new" element={<CreateBookin />} />
+              <Route path="/booking/:bookingId" element={<Booking />} />
+              <Route path="/check-in/:bookingId" element={<CheckIn />} />
+              <Route path="/check-out/:bookingId" element={<CheckOut />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/restaurant" element={<Restaurant />} />
+            </Route>
 
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
       <Toaster
         position="top-center"

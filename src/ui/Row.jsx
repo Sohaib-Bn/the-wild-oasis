@@ -7,6 +7,7 @@ const Row = styled.div`
     props.$gap &&
     css`
       gap: ${props.$gap}rem;
+      align-items: center;
     `}
 
   ${(props) =>

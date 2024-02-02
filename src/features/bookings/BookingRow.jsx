@@ -14,7 +14,6 @@ import {
   HiTrash,
 } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
-import { useCheckout } from "../check-in-out/useCheckout";
 import { useDeleteBooking } from "./useDeleteBooking";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
@@ -67,7 +66,6 @@ function BookingRow({
   };
 
   const navigate = useNavigate();
-  const { isPending: isCheckingout, checkout } = useCheckout();
   const { isPending: isDeleting, deleteBooking } = useDeleteBooking();
 
   return (
@@ -112,8 +110,7 @@ function BookingRow({
 
                 {status === "checked-in" && (
                   <Menus.Button
-                    disabled={isCheckingout}
-                    onClick={() => checkout(bookingId)}
+                    onClick={() => navigate(`/check-out/${bookingId}`)}
                     icon={<HiArrowUpOnSquare />}
                   >
                     Check out

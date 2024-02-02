@@ -69,18 +69,46 @@ export async function createUpdateItem({ id, newItemObj }) {
 //////////////////////////////////////////
 // RESTAURANT BILLS
 
-export async function createBill(billData) {
-  console.log(billData);
+export async function getBills(bookingId) {
   const { data, error } = await supabase
-    .from("restuarntBills")
+    .from("restaurantBills")
+    .select("*")
+    .eq("bookingId", bookingId);
+
+  if (error) {
+    console.error(error.message);
+    throw new Error("Bills could not be loaded");
+  }
+
+  return data;
+}
+
+export async function createBill(billData) {
+  const { data, error } = await supabase
+    .from("restaurantBills")
     .insert([billData])
     .select()
     .single();
 
   if (error) {
-    console.log(error.message);
+    console.error(error.message);
     throw new Error("Bill could not be created");
   }
 
   return { data };
+}
+
+export async function updateBills({ bookingId, updatedData }) {
+  const { data, error } = await supabase
+    .from("restaurantBills")
+    .update(updatedData)
+    .eq("bookingId", bookingId)
+    .select();
+
+  if (error) {
+    console.error(error.message);
+    throw new Error("Bills could be updated");
+  }
+
+  return data;
 }

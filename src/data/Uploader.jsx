@@ -7,7 +7,7 @@ import { subtractDates } from "../utils/helpers";
 import { bookings } from "./data-bookings";
 import { cabins } from "./data-cabins";
 import { guests } from "./data-guests";
-import { restaurant } from "./data-restaurant";
+import { restaurantMenu } from "./data-restaurantMenu";
 
 // const originalSettings = {
 //   minBookingLength: 3,
@@ -31,8 +31,8 @@ async function deleteBookings() {
   if (error) console.log(error.message);
 }
 
-async function deleteRestaurant() {
-  const { error } = await supabase.from("restaurant").delete().gt("id", 0);
+async function deleteRestaurantMenu() {
+  const { error } = await supabase.from("restaurantMenu").delete().gt("id", 0);
   if (error) console.log(error.message);
 }
 
@@ -46,8 +46,10 @@ async function createCabins() {
   if (error) console.log(error.message);
 }
 
-async function createRestaurant() {
-  const { error } = await supabase.from("restaurant").insert(restaurant);
+async function createRestaurantMenu() {
+  const { error } = await supabase
+    .from("restaurantMenu")
+    .insert(restaurantMenu);
   if (error) console.log(error.message);
 }
 
@@ -118,13 +120,13 @@ function Uploader() {
     await deleteBookings();
     await deleteGuests();
     await deleteCabins();
-    await deleteRestaurant();
+    await deleteRestaurantMenu();
 
     // Bookings need to be created LAST
     await createGuests();
     await createCabins();
     await createBookings();
-    await createRestaurant();
+    await createRestaurantMenu();
 
     setIsLoading(false);
   }

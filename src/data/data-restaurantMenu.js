@@ -1,4 +1,4 @@
-export const restaurant = [
+export const restaurantMenu = [
   { name: "Burger", price: 8.99, status: "available" },
   { name: "Pizza (Margherita)", price: 12.5, status: "available" },
   {

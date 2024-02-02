@@ -1,12 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../ui/Button";
-import { useCheckout } from "./useCheckout";
 
 function CheckoutButton({ bookingId }) {
-  const { isPending, checkout } = useCheckout();
+  const navigate = useNavigate();
   return (
     <Button
-      disabled={isPending}
-      onClick={() => checkout(bookingId)}
+      onClick={() => navigate(`/check-out/${bookingId}`)}
       $variation="primary"
       $size="small"
     >

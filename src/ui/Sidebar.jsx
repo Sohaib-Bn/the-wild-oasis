@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Logo from "./Logo";
 import MainNav from "./MainNav";
-import Uploader from "../data/Uploader";
+// import Uploader from "../data/Uploader";
 import { useDarkMode } from "../contexts/DarkModeContex";
 
 const StyledSidebar = styled.aside`
@@ -23,7 +23,7 @@ function Sidebar() {
       <Logo imgaeSrc={imgaeSrc} />
       <MainNav />
 
-      <Uploader />
+      {/* <Uploader /> */}
     </StyledSidebar>
   );
 }

@@ -59,17 +59,18 @@ function CabinRow({ cabin, bookings }) {
   const { updateCabin } = useUpdateCabin(false);
 
   useEffect(() => {
-    if (status === "unavailable") return;
+    if (status === "unavailable");
 
-    const activeBooking = bookings.find(
-      (booking) =>
+    const activeBooking = bookings.find((booking) => {
+      return (
         booking.cabinId === cabinId &&
         booking.status === "checked-in" &&
         isWithinInterval(new Date(), {
           start: booking.startDate,
-          end: addDays(booking.endDate, 1),
+          end: addDays(booking.endDate, 2),
         })
-    );
+      );
+    });
 
     const newCabinData = activeBooking ? "active" : "idel";
 

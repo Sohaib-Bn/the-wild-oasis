@@ -8,7 +8,7 @@ import { useBookings } from "../bookings/useBookings";
 
 function CabinTable() {
   const { isLoading: isLoading1, cabins } = useCabins();
-  const { isLoading: isLoading2, bookings } = useBookings(false);
+  const { isLoading: isLoading2, bookings } = useBookings(true);
 
   const [searchParams] = useSearchParams();
 

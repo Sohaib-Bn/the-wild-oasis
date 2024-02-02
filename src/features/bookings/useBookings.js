@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBookings } from "../../services/apiBookings";
 import { useSearchParams } from "react-router-dom";
 import { MAX_RESULT_PER_PAGE } from "../../utils/constants";
+import { useEffect, useMemo } from "react";
 
 export function useBookings(allBookings = false) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,8 +27,10 @@ export function useBookings(allBookings = false) {
 
   // PAGINATION
 
-  let page;
-  page = Number(searchParams.get("page")) || 1;
+  const page = useMemo(
+    () => Number(searchParams.get("page")) || 1,
+    [searchParams]
+  );
 
   const {
     data: { data: bookings, count } = {},
@@ -45,17 +48,24 @@ export function useBookings(allBookings = false) {
         }
   );
 
+  const pageCount = Math.ceil(count / MAX_RESULT_PER_PAGE);
+
+  useEffect(() => {
+    if (page > pageCount) {
+      const updatedPage = pageCount;
+      if (pageCount !== 0) {
+        searchParams.set("page", updatedPage);
+        setSearchParams(searchParams);
+      } else {
+        searchParams.delete("page");
+        setSearchParams(searchParams);
+      }
+    }
+  }, [page, pageCount, searchParams, setSearchParams]);
+
   if (allBookings) return { bookings, isLoading, error };
 
   // PRE-FETCHING
-
-  const pageCount = Math.ceil(count / MAX_RESULT_PER_PAGE);
-
-  if (page > pageCount) {
-    page = pageCount;
-    searchParams.set("page", page);
-    setSearchParams(searchParams);
-  }
 
   if (page < pageCount)
     client.prefetchQuery({

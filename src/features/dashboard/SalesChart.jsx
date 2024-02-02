@@ -65,13 +65,19 @@ function SalesChart({ bookings, numDays }) {
     return {
       label: format(date, "MMM dd"),
       totalSales: bookings
-        .filter((b) => isSameDay(date, b.created_at))
+        .filter(
+          (b) => isSameDay(date, b.created_at) && b.status !== "unconfirmed"
+        )
         .reduce((acc, cur) => acc + cur.totalPrice, 0),
       extrasSales: bookings
-        .filter((b) => isSameDay(date, b.created_at))
+        .filter(
+          (b) => isSameDay(date, b.created_at) && b.status !== "unconfirmed"
+        )
         .reduce((acc, cur) => acc + cur.extrasPrice, 0),
     };
   });
+
+  console.log(bookings);
 
   const { isDarkMode } = useDarkMode();
   const colors = isDarkMode

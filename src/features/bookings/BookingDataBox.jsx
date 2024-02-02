@@ -11,6 +11,7 @@ import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import Row from "../../ui/Row";
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -101,8 +102,20 @@ const Footer = styled.footer`
   text-align: right;
 `;
 
+const SpanLink = styled.footer`
+  color: var(--color-brand-700);
+  font-size: 1.35rem;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: var(--color-brand-900);
+  }
+`;
+
 // A purely presentational component
-function BookingDataBox({ booking }) {
+function BookingDataBox({ booking, bills, breakfastPrice, checkoutSession }) {
   const {
     created_at,
     startDate,
@@ -115,9 +128,30 @@ function BookingDataBox({ booking }) {
     hasBreakfast,
     observations,
     isPaid,
+    status,
     guests: { fullName: guestName, email, country, countryFlag, nationalID },
     cabins: { name: cabinName },
   } = booking;
+
+  const hasExtrasPrice = Boolean(extrasPrice);
+
+  const hasBills = Boolean(bills?.length);
+
+  let totalBillsPriceNotPaid;
+  let totalBillsPrice;
+
+  if (status !== "unconfirmed") {
+    totalBillsPriceNotPaid = bills
+      .filter((bill) => !bill.isConfirmPayment)
+      .map((bill) => bill.totalPrice)
+      .reduce((cur, acc) => cur + acc, 0)
+      ?.toFixed(2);
+
+    totalBillsPrice = bills
+      .map((bill) => bill.totalPrice)
+      .reduce((cur, acc) => cur + acc, 0)
+      ?.toFixed(2);
+  }
 
   return (
     <StyledBookingDataBox>
@@ -163,18 +197,99 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price $isPaid={isPaid}>
-          <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
-            {formatCurrency(totalPrice)}
+        {status !== "unconfirmed" && (
+          <>
+            <DataItem icon={<HiOutlineCheckCircle />} label="Bills registered?">
+              {hasBills ? (
+                <Row $gap={1.8}>
+                  <span>
+                    {bills?.length}
+                    {` ( ${
+                      bills?.filter((bill) => !bill.isConfirmPayment).length
+                    } bill${
+                      bills?.filter((bill) => !bill.isConfirmPayment).length !==
+                      1
+                        ? "s have"
+                        : " has"
+                    } not paid , ${
+                      bills?.filter((bill) => bill.isConfirmPayment).length
+                    } bill${
+                      bills?.filter((bill) => bill.isConfirmPayment).length !==
+                      1
+                        ? "s have"
+                        : " has"
+                    } paid )`}
+                  </span>
+                  <SpanLink>Show details</SpanLink>
+                </Row>
+              ) : (
+                "No"
+              )}
+            </DataItem>
+          </>
+        )}
 
-            {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
-              )} breakfast)`}
-          </DataItem>
+        {hasExtrasPrice && (
+          <>
+            <DataItem icon={<HiOutlineCurrencyDollar />} label="Extras price :">
+              <span>
+                {`${formatCurrency(extrasPrice)} ( ${
+                  hasBreakfast
+                    ? `${formatCurrency(breakfastPrice)} breakfast `
+                    : ""
+                }${hasBreakfast && hasBills ? " + " : ""} ${
+                  hasBills ? ` ${formatCurrency(totalBillsPrice)} bills` : ""
+                } )
+                `}
+              </span>
+            </DataItem>
+          </>
+        )}
 
-          <p>{isPaid ? "Paid" : "Will pay at property"}</p>
-        </Price>
+        {checkoutSession && (
+          <>
+            <DataItem icon={<HiOutlineCurrencyDollar />} label="Total price :">
+              {formatCurrency(totalPrice)}
+
+              {hasExtrasPrice &&
+                ` ( ${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
+                  extrasPrice
+                )} extras )`}
+            </DataItem>
+          </>
+        )}
+
+        {checkoutSession && Boolean(Number(totalBillsPriceNotPaid)) && (
+          <Price $isPaid={!Boolean(Number(totalBillsPriceNotPaid))}>
+            <DataItem
+              icon={<HiOutlineCurrencyDollar />}
+              label={"Bills not paid"}
+            >
+              {formatCurrency(totalBillsPriceNotPaid)}
+            </DataItem>
+
+            <p>
+              {!Boolean(Number(totalBillsPriceNotPaid))
+                ? "Paid"
+                : "Will pay at property"}
+            </p>
+          </Price>
+        )}
+
+        {!checkoutSession && (
+          <Price $isPaid={isPaid}>
+            <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
+              {formatCurrency(totalPrice)}
+
+              {hasExtrasPrice &&
+                ` ( ${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
+                  extrasPrice
+                )} extras )`}
+            </DataItem>
+
+            <p>{isPaid ? "Paid" : "Will pay at property"}</p>
+          </Price>
+        )}
       </Section>
 
       <Footer>

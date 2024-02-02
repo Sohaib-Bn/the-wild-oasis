@@ -8,13 +8,15 @@ import CheckBox from "../../ui/Checkbox";
 import DynamicInputsComponent from "../../ui/DynamicInputsComponent";
 import Select from "../../ui/Select";
 import Spinner from "../../ui/Spinner";
+import SpinnerMini from "../../ui/SpinnerMini";
+
 import { useMenu } from "./useMenu";
 import { useForm } from "react-hook-form";
 import { useBookings } from "../bookings/useBookings";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helpers";
 import { useCreateBill } from "./useCreateBill";
-import SpinnerMini from "../../ui/SpinnerMini";
+import { useUpdateBooking } from "../bookings/useUpdateBooking";
 
 function RegisterBillForm({ onCloseModal }) {
   const [totalPrice, setTotalPrice] = useState(0);
@@ -22,13 +24,13 @@ function RegisterBillForm({ onCloseModal }) {
   const [guestName, setGuestName] = useState("");
   const [cabinName, setCabinName] = useState("");
   const [itemsError, setItemsError] = useState(false);
-
   const [initializeInputContainers, setInitializeInputContainers] =
     useState(false);
 
   const { isLoading: isLoading1, menu } = useMenu(true);
   const { isLoading: isLoading2, bookings } = useBookings(true);
   const { isCreating, createBill } = useCreateBill();
+  const { isUpdating, updateBooking } = useUpdateBooking(false);
 
   const {
     handleSubmit,
@@ -136,7 +138,7 @@ function RegisterBillForm({ onCloseModal }) {
         const index = key.split("-")[0];
         const id = formData[`${index}-name`]?.split("-")[1];
         const name = formData[`${index}-name`]?.split("-")[0];
-        const price = formData[`${index}-price`];
+        const price = formData[`${index}-price`]?.split("$")[1];
         const quantity = formData[`${index}-quantity`];
 
         if (id && name && price && quantity)
@@ -149,7 +151,6 @@ function RegisterBillForm({ onCloseModal }) {
       }
     }
 
-    console.log(formData);
     if (!items.length) {
       setItemsError(true);
       return;
@@ -165,16 +166,29 @@ function RegisterBillForm({ onCloseModal }) {
       items: itemsJSONString,
     };
 
+    const currBooking = bookings.find(
+      (booking) =>
+        booking.status === "checked-in" && booking.id === +formData.bookingId
+    );
+
     createBill(billData, {
       onSettled: () => {
         handleClear();
+      },
+    });
+
+    updateBooking({
+      id: +formData.bookingId,
+      bookingObj: {
+        totalPrice: currBooking.totalPrice + totalPrice,
+        extrasPrice: currBooking.extrasPrice + totalPrice,
+        isPaid: !currBooking.isPaid ? currBooking.isPaid : isConfirmPayment,
       },
     });
   }
 
   function handleClear() {
     for (const key in formData) {
-      console.log("clear");
       if (key.endsWith("-name")) {
         const index = key.split("-")[0];
         setValue(`${index}-name`, "");
@@ -199,7 +213,7 @@ function RegisterBillForm({ onCloseModal }) {
       >
         <FormRow label="Booking id" error={errors?.bookingId?.message}>
           <Input
-            disabled={isCreating}
+            disabled={isCreating || isUpdating}
             id="bookingId"
             {...register("bookingId", {
               required: "This field is required",
@@ -233,7 +247,7 @@ function RegisterBillForm({ onCloseModal }) {
             colums=" 23rem 10rem 8rem"
             inputs={[
               <Select
-                disabled={isCreating}
+                disabled={isCreating || isUpdating}
                 defaultValue=""
                 name="name"
                 options={[
@@ -243,11 +257,11 @@ function RegisterBillForm({ onCloseModal }) {
               />,
               <Input disabled name="price" placeholder="price" />,
               <Input
+                // disabled={isCreating || isUpdating}
                 min={1}
                 defaultValue={1}
                 type="number"
                 name="quantity"
-                disabled={isCreating}
               />,
             ]}
           />
@@ -260,7 +274,7 @@ function RegisterBillForm({ onCloseModal }) {
         </FormRow>
         <Box>
           <CheckBox
-            disabled={isCreating}
+            disabled={isCreating || isUpdating}
             checked={isConfirmPayment}
             onChange={() => setIsConfirmPayment((state) => !state)}
             id="confirmPayment"
@@ -275,14 +289,14 @@ function RegisterBillForm({ onCloseModal }) {
         <FormRow type="submit">
           <Button
             onClick={handleClear}
-            disabled={isCreating}
+            disabled={isCreating || isUpdating}
             $variation="secondary"
             type="reset"
           >
             Cancel
           </Button>
-          <Button disabled={isCreating}>
-            {isCreating ? <SpinnerMini /> : "Register new bill"}
+          <Button disabled={isCreating || isUpdating}>
+            {isCreating || isUpdating ? <SpinnerMini /> : "Register new bill"}
           </Button>
         </FormRow>
       </Form>
