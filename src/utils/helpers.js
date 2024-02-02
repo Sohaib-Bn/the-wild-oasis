@@ -1,6 +1,6 @@
 import emailjs from "emailjs-com";
 
-import { differenceInDays, formatDistance, parseISO } from "date-fns";
+import { differenceInDays, format, formatDistance, parseISO } from "date-fns";
 
 // import { differenceInDays } from "date-fns/esm";
 // import { differenceInDays } from "date-fns/esm";
@@ -36,7 +36,7 @@ export const formatCurrency = (value) =>
 
 // sendEmail.js
 export async function sendThankYouEmail(send_to, html) {
-  const apiKey = "2nWf9lzoEuTzr8I4H";
+  const apiKey = import.meta.env.VITE_REACT_APP_EMAILJS_PUBLIC_API_KEY;
 
   const templateParams = {
     send_to: send_to,
@@ -55,4 +55,75 @@ export async function sendThankYouEmail(send_to, html) {
     console.error("Email failed to send");
     throw new Error("Email failed to send");
   }
+}
+
+export function generateThankYouEmailHtml({ bookingData, bills }) {
+  const fullName =
+    bookingData.guests.fullName.split(" ")[0].charAt(0).toUpperCase() +
+    bookingData.guests.fullName.split(" ")[0].slice(1).toLowerCase();
+
+  const bookingInfo = `
+    <h3>Booking Information:</h3>
+    <ul>
+      <li>Cabin Name: ${bookingData.cabins.name}</li>
+      <li>Cabin Price: ${formatCurrency(bookingData.cabinPrice)}</li>
+      <li>Extras Price: ${formatCurrency(bookingData.extrasPrice)}</li>
+      <li>Total Price: ${formatCurrency(bookingData.totalPrice)}</li>
+      <li>Bills: ${
+        Boolean(bills.length) ? bills.length : "No bills registered"
+      }</li>
+    </ul>
+  `;
+
+  const billsInfo = Boolean(bills.length)
+    ? bills
+        .map((bill, index) => {
+          const items = JSON.parse(bill.items);
+          const billDetails = `
+          <div key=${bill.id} style={{ marginBottom: "20px" }}>
+            <h3>Bill ${index + 1}:</h3>
+            <p>Registered at ${format(
+              new Date(bill.created_at),
+              "EEE, MMM dd yyyy"
+            )}</p>
+            ${
+              bill.observation !== ""
+                ? `<p>Observation: ${bill.observation}</p>`
+                : ""
+            }
+            ${items
+              .map(
+                (item, i) =>
+                  `<p key=${i}><strong>${item.quantity}</strong> x ${
+                    item.name
+                  } - <strong>${formatCurrency(item.price)}</strong></p>`
+              )
+              .join("")}
+            <strong>Total Price:</strong> ${formatCurrency(bill.totalPrice)}
+          </div>
+        `;
+          return billDetails;
+        })
+        .join("")
+    : "";
+
+  const emailBody = `
+    <h2>Dear ${fullName},</h2>
+    <p>Thank you for choosing our service. We appreciate your stay with us.</p>
+    <div>
+    ${bookingInfo}
+    </div>
+   <div>
+    <h3>Your bills:</h3>
+    <h4><strong>Total Bills Price:</strong> $256.65</h4>
+    ${billsInfo}
+   </div>
+    <hr />
+    <p>If you have any questions, feel free to contact us: <strong>theWildOasisSupport@gmail.com</strong></p>
+    <p>Best regards,</p>
+    <p>The wild Oasis</p>
+    <p>Safe travels!</p>
+  `;
+
+  return emailBody;
 }

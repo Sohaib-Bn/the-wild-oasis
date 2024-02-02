@@ -9,16 +9,14 @@ import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 import Spinner from "../../ui/Spinner";
 import Checkbox from "../../ui/Checkbox";
-import ThankYouEmailTemplate from "../../ui/ThankYouEmailTemplate";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useBooking } from "../bookings/useBooking";
 import { useSettings } from "../settings/useSettings";
-import { formatCurrency } from "../../utils/helpers";
+import { formatCurrency, generateThankYouEmailHtml } from "../../utils/helpers";
 import { useEffect, useState } from "react";
 import { useBills } from "../restaurant/useBills";
 import { useCheckout } from "./useCheckout";
-import { renderToStaticMarkup } from "react-dom/server";
 import { useSendEmail } from "./useSendEmail";
 import { useUpdateBills } from "../restaurant/useUpdateBills";
 
@@ -77,9 +75,10 @@ function CheckoutBooking() {
       updateBills({ bookingId, updatedData: { isConfirmPayment: true } });
 
       if (sendEmailToGuest) {
-        const html = renderToStaticMarkup(
-          <ThankYouEmailTemplate bookingData={booking} bills={bills} />
-        );
+        const html = generateThankYouEmailHtml({
+          bookingData: booking,
+          bills: bills,
+        });
         sendEmail({ send_to: booking.guests.email, html });
       }
     }
