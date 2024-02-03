@@ -36,9 +36,9 @@ function CheckoutBooking() {
   const { isLoading: isLoading2, bills = [] } = useBills();
   const { isLoading: isLoadingSettings, settings } = useSettings();
 
+  const { isUpdating: isUpdatingBills, updateBills } = useUpdateBills(false);
   const { isCheckingout, checkout } = useCheckout();
   const { isSendingEmail, sendEmail } = useSendEmail();
-  const { isUpdating: isUpdatingBills, updateBills } = useUpdateBills(false);
 
   const moveBack = useMoveBack();
 
@@ -116,7 +116,7 @@ function CheckoutBooking() {
         <Checkbox
           checked={sendEmailToGuest}
           id="sendEmail"
-          onChange={() => setSendEmailToGuest(true)}
+          onChange={() => setSendEmailToGuest((s) => !s)}
         >
           Send email to {booking.guests.email}
         </Checkbox>
