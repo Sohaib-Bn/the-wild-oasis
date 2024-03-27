@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBookings } from "../../services/apiBookings";
 import { useSearchParams } from "react-router-dom";
-import { MAX_RESULT_PER_PAGE } from "../../utils/constants";
 import { useEffect, useMemo } from "react";
+import { MAX_RESULT_PER_PAGE } from "../../utils/constants";
 
 export function useBookings(allBookings = false) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,7 +21,7 @@ export function useBookings(allBookings = false) {
 
   // SORTING
 
-  const sortByValue = searchParams.get("sortBy") || "startDate-asc";
+  const sortByValue = searchParams.get("sortBy") || "startDate-desc";
   const [field, direction] = sortByValue.split("-");
   const sorByObj = { field, direction };
 
