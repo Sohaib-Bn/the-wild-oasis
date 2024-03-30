@@ -1,7 +1,7 @@
+import { ErrorBoundary } from "react-error-boundary";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "../src/ui/ErrorFallback.jsx";
 import GlobalStyles from "./styles/GlobalStyles.js";
 

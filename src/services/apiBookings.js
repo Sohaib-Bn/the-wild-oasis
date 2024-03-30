@@ -1,6 +1,6 @@
 import { MAX_RESULT_PER_PAGE } from "../utils/constants";
 import { getToday } from "../utils/helpers";
-import supabase from "./supabase";
+import supabase, { supabaseAuth } from "./supabase";
 
 export async function getBookings(filter, sort, page) {
   let query = supabase
@@ -105,7 +105,7 @@ export async function getStaysTodayActivity() {
 }
 
 export async function updateBooking(id, obj) {
-  const { data, error } = await supabase
+  const { data: booking, error } = await supabase
     .from("bookings")
     .update(obj)
     .eq("id", id)
@@ -113,10 +113,26 @@ export async function updateBooking(id, obj) {
     .single();
 
   if (error) {
-    console.error(error);
+    console.error(error.message);
     throw new Error("Booking could not be updated");
   }
-  return data;
+
+  const { data, error: error1 } = await supabaseAuth
+    .from("bookings")
+    .update({ status: obj.status })
+    .eq("guestId", booking.guestId)
+    .select()
+    .single();
+
+  if (error1) {
+    console.error(error1.message);
+    await supabase.from("bookings").delete().eq("id", id);
+    throw new Error("Booking could not be updated");
+  }
+
+  console.log(data);
+
+  return booking;
 }
 
 export async function deleteBooking(id) {

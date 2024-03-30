@@ -1,3 +1,10 @@
+import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "./useBooking";
+import { useNavigate } from "react-router-dom";
+import { useDeleteBooking } from "./useDeleteBooking";
+import { useSettings } from "../settings/useSettings";
+import { useBills } from "../restaurant/useBills";
+
 import styled from "styled-components";
 
 import BookingDataBox from "./BookingDataBox";
@@ -8,17 +15,10 @@ import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 import Empty from "../../ui/Empty";
-
-import { useMoveBack } from "../../hooks/useMoveBack";
-import { useBooking } from "./useBooking";
 import Spinner from "../../ui/Spinner";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
-import { useDeleteBooking } from "./useDeleteBooking";
-import { useSettings } from "../settings/useSettings";
-import { useBills } from "../restaurant/useBills";
+import toast from "react-hot-toast";
 
 const HeadingGroup = styled.div`
   display: flex;

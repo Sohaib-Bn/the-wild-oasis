@@ -13,6 +13,11 @@ const supabase = createClient(supabaseUrl, supabaseServiveRoleKey, {
   },
 });
 
+const supabaseAuthUrl = "https://ptgevxelcojvdjvctirn.supabase.co";
+const supabaseAuthKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0Z2V2eGVsY29qdmRqdmN0aXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE1Nzg3MzQsImV4cCI6MjAyNzE1NDczNH0.YgXUAVYyyjwL2y5IUdBoH35XMfyZvKiLjj7JLekH_8s";
+export const supabaseAuth = createClient(supabaseAuthUrl, supabaseAuthKey);
+
 export const supabaseAdminAuthClient = supabase.auth.admin;
 
 export default supabase;

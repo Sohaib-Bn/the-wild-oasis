@@ -13,7 +13,7 @@ export function useLogin() {
       queryClient.setQueryData(["user"], user.user);
       navigate("/");
     },
-    onError: (err) => {
+    onError: () => {
       toast.error("Your email or passwrod is not correct");
     },
   });
