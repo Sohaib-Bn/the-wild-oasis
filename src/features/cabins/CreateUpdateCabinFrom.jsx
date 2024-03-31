@@ -6,12 +6,12 @@ import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 import Box from "../../ui/Box";
 import Checkbox from "../../ui/Checkbox";
-// import Checkbox from "../../ui/Checkbox";
 
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useUpdateCabin } from "./useUpdateCabin";
 import { useState } from "react";
+import Select from "../../ui/Select";
 
 function CreateUpdateCabinForm({
   cabinToUpdate = {},
@@ -22,6 +22,8 @@ function CreateUpdateCabinForm({
   const [isOutOfService, setIsOutOfService] = useState(
     status === "unavailable"
   );
+
+  const [type, setType] = useState("home");
 
   const isUpdateSession = Boolean(updateId);
   const isTypeModel = Boolean(onCloseModal);
@@ -48,10 +50,20 @@ function CreateUpdateCabinForm({
       status: isOutOfService ? "unavailable" : "idel",
     };
 
+    console.log(data.amentities);
+
     if (isUpdateSession)
       updateCabin(
         {
-          newCabinData: { ...data, image },
+          newCabinData: {
+            ...data,
+            image,
+            type,
+            amentities:
+              typeof data.amentities === "string"
+                ? data.amentities.split(",")
+                : [],
+          },
           id: updateId,
         },
         {
@@ -63,7 +75,24 @@ function CreateUpdateCabinForm({
       );
     else
       createCabin(
-        { ...data, image: image },
+        {
+          ...data,
+          image,
+          type,
+          averageRate: 1,
+          starRates: {
+            1: 100,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          },
+          isGuestsFavorite: false,
+          amentities:
+            typeof data.amentities === "string"
+              ? data.amentities.split(",")
+              : [],
+        },
         {
           onSuccess: () => {
             reset();
@@ -78,7 +107,7 @@ function CreateUpdateCabinForm({
       $type={isTypeModel ? "modal" : "regular"}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormRow label="Cabin name" error={errors.name?.message}>
+      <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           disabled={isWorking}
           type="text"
@@ -87,7 +116,7 @@ function CreateUpdateCabinForm({
         />
       </FormRow>
 
-      <FormRow label="Maximum capacity" error={errors.maxCapacity?.message}>
+      <FormRow label="Maximum capacity" error={errors?.maxCapacity?.message}>
         <Input
           disabled={isWorking}
           type="number"
@@ -102,7 +131,7 @@ function CreateUpdateCabinForm({
         />
       </FormRow>
 
-      <FormRow label="Regular price" error={errors.regularPrice?.message}>
+      <FormRow label="Regular price" error={errors?.regularPrice?.message}>
         <Input
           disabled={isWorking}
           type="number"
@@ -115,12 +144,11 @@ function CreateUpdateCabinForm({
         />
       </FormRow>
 
-      <FormRow label="Discount" error={errors.discount?.message}>
+      <FormRow label="Discount" error={errors?.discount?.message}>
         <Input
           disabled={isWorking}
           type="number"
           id="discount"
-          defaultValue={0}
           {...register("discount", {
             required: "Discount is required",
             validate: {
@@ -134,7 +162,40 @@ function CreateUpdateCabinForm({
         />
       </FormRow>
 
-      <FormRow label="Descritpion" error={errors.description?.message}>
+      <FormRow label="Location" error={errors?.location?.message}>
+        <Input
+          placeholder="Algeria, Algiers"
+          disabled={isWorking}
+          id="location"
+          {...register("location", {
+            required: "Location is required",
+          })}
+        />
+      </FormRow>
+
+      <FormRow label="Amentities" error={errors?.amentities?.message}>
+        <Input
+          placeholder="wifi, conditioner"
+          disabled={isWorking}
+          id="amentities"
+          {...register("amentities")}
+        />
+      </FormRow>
+
+      <FormRow label="Type" error={errors?.type?.message}>
+        <Select
+          options={[
+            { label: "Entire home", value: "home" },
+            { label: "Room", value: "room" },
+          ]}
+          disabled={isWorking}
+          id="type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+        />
+      </FormRow>
+
+      <FormRow label="Descritpion" error={errors?.description?.message}>
         <Textarea
           disabled={isWorking}
           type="number"
@@ -143,7 +204,7 @@ function CreateUpdateCabinForm({
         />
       </FormRow>
 
-      <FormRow label="Image" error={errors.image?.message}>
+      <FormRow label="Image" error={errors?.image?.message}>
         <FileInput
           disabled={isWorking}
           id="image"

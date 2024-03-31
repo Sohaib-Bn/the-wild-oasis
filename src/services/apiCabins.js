@@ -36,6 +36,20 @@ export async function deleteCabin(id) {
 // CREATE/Updated CABIN
 
 export async function createUpdateCabin(newCabin, id) {
+  const res = await fetch(
+    `https://nominatim.openstreetmap.org/search?q=${newCabin.location}&format=json&limit=1`
+  );
+  if (!res.ok) throw new Error("Nationality is invalid");
+
+  const locationData = await res.json();
+
+  const lat = locationData[0].lat;
+  const lon = locationData[0].lon;
+
+  const locationCoordinates = `(${lat},${lon})`;
+
+  console.log(newCabin, locationCoordinates);
+
   const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
 
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
@@ -52,10 +66,24 @@ export async function createUpdateCabin(newCabin, id) {
 
   // A. CRATE CABIN
 
-  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
+  if (!id)
+    query = query.insert([
+      {
+        ...newCabin,
+        image: imagePath,
+        coordinates: locationCoordinates,
+      },
+    ]);
 
   // B. Update CABIN
-  if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+  if (id)
+    query = query
+      .update({
+        ...newCabin,
+        image: imagePath,
+        coordinates: locationCoordinates,
+      })
+      .eq("id", id);
 
   const { data, error } = await query.select().single();
 

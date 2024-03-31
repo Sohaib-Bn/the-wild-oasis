@@ -15,6 +15,10 @@ const StyledModal = styled.div`
   padding: 3.2rem 4rem;
   transform-origin: top;
   transition: all 0.3s;
+  max-height: 80vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* aspect-ratio: 1; */
 `;
 
 const Overlay = styled.div`
