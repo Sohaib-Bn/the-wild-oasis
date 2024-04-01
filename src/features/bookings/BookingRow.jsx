@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useDeleteBooking } from "./useDeleteBooking";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -67,6 +68,7 @@ function BookingRow({
 
   const navigate = useNavigate();
   const { isPending: isDeleting, deleteBooking } = useDeleteBooking();
+  const { isRegularUser } = useDarkMode();
 
   return (
     <>
@@ -125,7 +127,9 @@ function BookingRow({
                   </Menus.Button>
                 )}
                 <Modal.Open opens="delete-booking">
-                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                  <Menus.Button disabled={isRegularUser} icon={<HiTrash />}>
+                    Delete
+                  </Menus.Button>
                 </Modal.Open>
               </Menus.List>
 

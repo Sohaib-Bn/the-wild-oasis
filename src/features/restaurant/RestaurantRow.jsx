@@ -8,6 +8,7 @@ import { useDeleteItem } from "./useDeleteItem";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import CreateUpdateItem from "./CreateUpdateItem";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 const Price = styled.div`
   font-family: "Sono";
@@ -16,6 +17,7 @@ const Price = styled.div`
 
 function RestaurantRow({ item = {} }) {
   const { isDeleting, deleteItem } = useDeleteItem();
+  const { isRegularUser } = useDarkMode();
 
   const statusToTagName = {
     available: "green",
@@ -33,10 +35,14 @@ function RestaurantRow({ item = {} }) {
           <Menus.Toggle id={item.id} />
           <Menus.List id={item.id}>
             <Modal.Open opens="update">
-              <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+              <Menus.Button disabled={isRegularUser} icon={<HiPencil />}>
+                Edit
+              </Menus.Button>
             </Modal.Open>
             <Modal.Open opens="delete">
-              <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              <Menus.Button disabled={isRegularUser} icon={<HiTrash />}>
+                Delete
+              </Menus.Button>
             </Modal.Open>
           </Menus.List>
         </Menus.Menu>

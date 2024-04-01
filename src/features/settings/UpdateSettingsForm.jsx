@@ -5,6 +5,7 @@ import { useSettings } from "./useSettings";
 import Spinner from "../../ui/Spinner";
 import toast from "react-hot-toast";
 import { useUpadteSetting } from "./useUpdateSetting";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 function UpdateSettingsForm() {
   const { isLoading, settings = {}, error } = useSettings();
 
@@ -16,6 +17,7 @@ function UpdateSettingsForm() {
   } = settings;
 
   const { isUpdating, updateSetting } = useUpadteSetting();
+  const { isRegularUser } = useDarkMode();
 
   if (isLoading) return <Spinner />;
 
@@ -32,7 +34,7 @@ function UpdateSettingsForm() {
     <Form>
       <FormRow label="Minimum nights/booking">
         <Input
-          disabled={isUpdating}
+          disabled={isUpdating || isRegularUser}
           defaultValue={minBookingLength}
           onBlur={(e) => handaleUpdateSetting(e, "minBookingLength")}
           type="number"
@@ -41,7 +43,7 @@ function UpdateSettingsForm() {
       </FormRow>
       <FormRow label="Maximum nights/booking">
         <Input
-          disabled={isUpdating}
+          disabled={isUpdating || isRegularUser}
           defaultValue={maxBookingLength}
           onBlur={(e) => handaleUpdateSetting(e, "maxBookingLength")}
           type="number"
@@ -50,7 +52,7 @@ function UpdateSettingsForm() {
       </FormRow>
       <FormRow label="Maximum guests/booking">
         <Input
-          disabled={isUpdating}
+          disabled={isUpdating || isRegularUser}
           defaultValue={maxGuestsPerBooking}
           onBlur={(e) => handaleUpdateSetting(e, "maxGuestsPerBooking")}
           type="number"
@@ -59,7 +61,7 @@ function UpdateSettingsForm() {
       </FormRow>
       <FormRow label="Breakfast price">
         <Input
-          disabled={isUpdating}
+          disabled={isUpdating || isRegularUser}
           defaultValue={breakfastPrice}
           onBlur={(e) => handaleUpdateSetting(e, "breakfastPrice")}
           type="number"

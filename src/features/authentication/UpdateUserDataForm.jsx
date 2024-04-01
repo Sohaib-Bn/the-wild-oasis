@@ -11,6 +11,7 @@ import { useUpdateUser } from "./useUpdateUser";
 import SpinnerMini from "../../ui/SpinnerMini";
 import Select from "../../ui/Select";
 import { useAllUsers } from "./useAllUsers";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
@@ -27,6 +28,7 @@ function UpdateUserDataForm() {
   const [fullname, setFullname] = useState(currentFullname);
   const [avatar, setAvatar] = useState(null);
   const [role, setRole] = useState(currRole);
+  const { isRegularUser } = useDarkMode();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -98,7 +100,7 @@ function UpdateUserDataForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isUpdating}>
+        <Button disabled={isUpdating || isRegularUser}>
           {isUpdating ? <SpinnerMini /> : "Update account"}
         </Button>
       </FormRow>

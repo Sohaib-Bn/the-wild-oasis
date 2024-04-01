@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { useLocalStorageState } from "../hooks/useLocalStorageState";
+import { useUser } from "../features/authentication/useUser";
 
 const DarkModeContext = createContext();
 
@@ -9,13 +10,17 @@ export function DarkModeContextProvider({ children }) {
     "darkMode"
   );
 
+  const { user } = useUser();
+
+  const isRegularUser = user?.user_metadata?.role === "regular";
+
   function toggleDarkMode() {
     setIsDarkMode((dark) => !dark);
   }
 
   return (
     <DarkModeContext.Provider
-      value={{ isDarkMode, setIsDarkMode, toggleDarkMode }}
+      value={{ isDarkMode, setIsDarkMode, toggleDarkMode, isRegularUser }}
     >
       {children}
     </DarkModeContext.Provider>

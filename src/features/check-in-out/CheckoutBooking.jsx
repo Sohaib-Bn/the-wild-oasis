@@ -19,6 +19,7 @@ import { useBills } from "../restaurant/useBills";
 import { useCheckout } from "./useCheckout";
 import { useSendEmail } from "./useSendEmail";
 import { useUpdateBills } from "../restaurant/useUpdateBills";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 const Box = styled.div`
   /* Box */
@@ -39,6 +40,7 @@ function CheckoutBooking() {
   const { isUpdating: isUpdatingBills, updateBills } = useUpdateBills(false);
   const { isCheckingout, checkout } = useCheckout();
   const { isSendingEmail, sendEmail } = useSendEmail();
+  const { isRegularUser } = useDarkMode();
 
   const moveBack = useMoveBack();
 
@@ -123,7 +125,7 @@ function CheckoutBooking() {
       </Box>
 
       <ButtonGroup>
-        <Button disabled={!isPaid} onClick={handleCheckout}>
+        <Button disabled={!isPaid || isRegularUser} onClick={handleCheckout}>
           Check out booking #{bookingId}
         </Button>
 

@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helpers";
 import { useCreateBill } from "./useCreateBill";
 import { useUpdateBooking } from "../bookings/useUpdateBooking";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 function RegisterBillForm({ onCloseModal }) {
   const [totalPrice, setTotalPrice] = useState(0);
@@ -31,6 +32,8 @@ function RegisterBillForm({ onCloseModal }) {
   const { isLoading: isLoading2, bookings } = useBookings(true);
   const { isCreating, createBill } = useCreateBill();
   const { isUpdating, updateBooking } = useUpdateBooking(false);
+
+  const { isRegularUser } = useDarkMode();
 
   const {
     handleSubmit,
@@ -295,7 +298,7 @@ function RegisterBillForm({ onCloseModal }) {
           >
             Cancel
           </Button>
-          <Button disabled={isCreating || isUpdating}>
+          <Button disabled={isCreating || isUpdating || isRegularUser}>
             {isCreating || isUpdating ? <SpinnerMini /> : "Register new bill"}
           </Button>
         </FormRow>

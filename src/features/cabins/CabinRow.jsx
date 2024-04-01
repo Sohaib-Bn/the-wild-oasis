@@ -1,18 +1,21 @@
-import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
+import { addDays, isWithinInterval } from "date-fns";
+import { useEffect } from "react";
+import { useUpdateCabin } from "./useUpdateCabin";
+
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import Spinner from "../../ui/Spinner";
-import { addDays, isWithinInterval } from "date-fns";
 import Tag from "../../ui/Tag";
-import { useEffect } from "react";
-import { useUpdateCabin } from "./useUpdateCabin";
 import CreateUpdateCabinForm from "./CreateUpdateCabinFrom";
+
+import styled from "styled-components";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 const Img = styled.img`
   display: block;
@@ -55,6 +58,8 @@ function CabinRow({ cabin, bookings }) {
 
   const { isCreating, createCabin } = useCreateCabin();
   const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { isRegularUser } = useDarkMode();
+
   // THE FIRST ARGUEMNT REFERS IF DISPLAY TOASTS OR NOT
   const { updateCabin } = useUpdateCabin(false);
 
@@ -127,16 +132,24 @@ function CabinRow({ cabin, bookings }) {
             <Menus.Toggle id={cabinId} />
 
             <Menus.List id={cabinId}>
-              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>
+              <Menus.Button
+                disabled={isRegularUser}
+                icon={<HiSquare2Stack />}
+                onClick={handleDuplicate}
+              >
                 Duplicate
               </Menus.Button>
 
               <Modal.Open opens="update">
-                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                <Menus.Button disabled={isRegularUser} icon={<HiPencil />}>
+                  Edit
+                </Menus.Button>
               </Modal.Open>
 
               <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                <Menus.Button disabled={isRegularUser} icon={<HiTrash />}>
+                  Delete
+                </Menus.Button>
               </Modal.Open>
             </Menus.List>
 

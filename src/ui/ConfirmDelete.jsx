@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
 import SpinnerMini from "./SpinnerMini";
+import { useDarkMode } from "../contexts/DarkModeContex";
 
 const StyledConfirmDelete = styled.div`
   width: 40rem;
@@ -26,6 +27,8 @@ function ConfirmDelete({ resource, onConfirm, disabled, onCloseModal }) {
     onConfirm();
   }
 
+  const { isRegularUser } = useDarkMode();
+
   return (
     <StyledConfirmDelete>
       <Heading type="h3">Delete {resource}</Heading>
@@ -41,7 +44,7 @@ function ConfirmDelete({ resource, onConfirm, disabled, onCloseModal }) {
         <Button
           $variation="danger"
           onClick={handleConfirmClick}
-          disabled={disabled}
+          disabled={disabled || isRegularUser}
         >
           {disabled ? <SpinnerMini /> : "Delete"}
         </Button>

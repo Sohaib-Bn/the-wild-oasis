@@ -15,6 +15,7 @@ import { useSettings } from "../settings/useSettings";
 import { formatCurrency } from "../../utils/helpers";
 import { useEffect, useState } from "react";
 import { useCheckin } from "./useCheckin";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 const Box = styled.div`
   /* Box */
@@ -37,6 +38,8 @@ function CheckinBooking() {
 
   const { isPending: isUpdating, checkinBooking } = useCheckin();
   const { isLoading: isLoadingSettings, settings } = useSettings();
+
+  const { isRegularUser } = useDarkMode();
 
   if (isLoading || isUpdating || isLoadingSettings) return <Spinner />;
 
@@ -111,7 +114,10 @@ function CheckinBooking() {
       </Box>
 
       <ButtonGroup>
-        <Button disabled={!isPaid || isUpdating} onClick={handleCheckin}>
+        <Button
+          disabled={!isPaid || isUpdating || isRegularUser}
+          onClick={handleCheckin}
+        >
           Check in booking #{bookingId}
         </Button>
 

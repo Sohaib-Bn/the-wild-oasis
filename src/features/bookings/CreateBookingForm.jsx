@@ -22,6 +22,7 @@ import { addDays, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useCreateBooking } from "./useCreateBooking";
 import { useNavigate } from "react-router-dom";
 import { useBookings } from "./useBookings";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 function CreateBookingForm() {
   const [selectedCabinId, setSelectedCabinId] = useState("");
@@ -51,6 +52,8 @@ function CreateBookingForm() {
       numGuests: "1",
     },
   });
+
+  const { isRegularUser } = useDarkMode();
 
   useEffect(() => {
     if (selectedCabinId) clearErrors("numGuests");
@@ -329,7 +332,7 @@ function CreateBookingForm() {
           Cancel
         </Button>
 
-        <Button disabled={isCreating}>
+        <Button disabled={isCreating || isRegularUser}>
           {isCreating ? <SpinnerMini /> : "Create new booking"}
         </Button>
       </FormRow>

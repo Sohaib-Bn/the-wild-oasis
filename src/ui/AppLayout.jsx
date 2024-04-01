@@ -3,7 +3,10 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import styled from "styled-components";
-import { DarkModeContextProvider } from "../contexts/DarkModeContex";
+import {
+  DarkModeContextProvider,
+  useDarkMode,
+} from "../contexts/DarkModeContex";
 
 const Main = styled.main`
   background-color: var(--color-grey-50);
@@ -24,13 +27,29 @@ const Container = styled.div`
 const StyledAppLayout = styled.div`
   display: grid;
   grid-template-columns: 26rem 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   height: 100vh;
+`;
+
+const Note = styled.header`
+  height: 6rem;
+  width: 100%;
+  background-color: var(--color-yellow-100);
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Link = styled.a`
+  color: var(--color-brand-700);
+  margin: 0 0.5rem;
 `;
 
 function AppLayout() {
   return (
     <DarkModeContextProvider>
+      <NoteComponent />
       <StyledAppLayout>
         <Header />
         <Sidebar />
@@ -45,3 +64,22 @@ function AppLayout() {
 }
 
 export default AppLayout;
+
+function NoteComponent() {
+  const { isRegularUser } = useDarkMode();
+
+  console.log(isRegularUser);
+
+  if (!isRegularUser) return null;
+
+  return (
+    <Note>
+      👋 Data mutations (create, update, delete) are deactivated for regular
+      account. please{" "}
+      <Link href="https://sodev.live#contact " target="blank">
+        contact
+      </Link>{" "}
+      me if you want to admin version
+    </Note>
+  );
+}

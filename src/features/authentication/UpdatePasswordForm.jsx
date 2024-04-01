@@ -6,10 +6,13 @@ import Input from "../../ui/Input";
 
 import { useUpdateUser } from "./useUpdateUser";
 import SpinnerMini from "../../ui/SpinnerMini";
+import { useDarkMode } from "../../contexts/DarkModeContex";
 
 function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
+
+  const { isRegularUser } = useDarkMode();
 
   const { updateUser, isPending: isUpdating } = useUpdateUser();
 
@@ -63,7 +66,7 @@ function UpdatePasswordForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isUpdating}>
+        <Button disabled={isUpdating || isRegularUser}>
           {isUpdating ? <SpinnerMini /> : "Update password"}
         </Button>
       </FormRow>

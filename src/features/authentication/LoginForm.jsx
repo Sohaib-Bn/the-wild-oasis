@@ -8,8 +8,8 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import SpinnerMini from "../../ui/SpinnerMini";
 
 function LoginForm() {
-  const [email, setEmail] = useState("sohaibbusinessbn@gmail.com");
-  const [password, setPassword] = useState("sohaib support");
+  const [email, setEmail] = useState("demo@example.com");
+  const [password, setPassword] = useState("demo demo");
 
   const { isPending, login } = useLogin();
 
@@ -19,8 +19,11 @@ function LoginForm() {
     login(
       { email, password },
       {
-        onSettled: () => {
+        onSuccess: () => {
           setEmail("");
+          setPassword("");
+        },
+        onError: () => {
           setPassword("");
         },
       }
