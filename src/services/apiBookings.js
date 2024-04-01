@@ -104,10 +104,10 @@ export async function getStaysTodayActivity() {
   return bookings;
 }
 
-export async function updateBooking(id, obj) {
+export async function updateBooking(id, newBookingData) {
   const { data: booking, error } = await supabase
     .from("bookings")
-    .update(obj)
+    .update(newBookingData)
     .eq("id", id)
     .select()
     .single();
@@ -117,20 +117,22 @@ export async function updateBooking(id, obj) {
     throw new Error("Booking could not be updated");
   }
 
-  const { data, error: error1 } = await supabaseAuth
-    .from("bookings")
-    .update({ status: obj.status })
-    .eq("guestId", booking.guestId)
-    .select()
-    .single();
+  console.log(booking);
 
-  if (error1) {
-    console.error(error1.message);
-    await supabase.from("bookings").delete().eq("id", id);
-    throw new Error("Booking could not be updated");
+  if (booking.source === "user") {
+    const { error: error1 } = await supabaseAuth
+      .from("bookings")
+      .update({ status: newBookingData.status })
+      .eq("guestId", booking.guestId)
+      .select()
+      .single();
+
+    if (error1) {
+      console.error(error1.message);
+      await supabase.from("bookings").delete().eq("id", id);
+      throw new Error("Booking could not be updated");
+    }
   }
-
-  console.log(data);
 
   return booking;
 }

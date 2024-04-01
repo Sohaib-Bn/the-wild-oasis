@@ -19,7 +19,7 @@ export function useCheckout() {
       queryClient.invalidateQueries({ active: true });
       navigate("/");
     },
-    onError: () => toast.error("Booking faild while checking out"),
+    onError: () => toast.error("Booking could not checke out"),
   });
 
   return { isCheckingout, checkout };

@@ -77,7 +77,7 @@ function CheckoutBooking() {
       if (sendEmailToGuest) {
         const html = generateThankYouEmailHtml({
           bookingData: booking,
-          bills: bills,
+          bills,
         });
         sendEmail({ send_to: booking.guests.email, html });
       }

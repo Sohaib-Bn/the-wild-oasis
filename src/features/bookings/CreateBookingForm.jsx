@@ -140,6 +140,7 @@ function CreateBookingForm() {
       status: "unconfirmed",
       isPaid: false,
       hasBreakfast: hasBreakfast,
+      source: "anon",
     };
 
     createBooking(bookingData, {

@@ -142,14 +142,14 @@ function BookingDataBox({ booking, bills, breakfastPrice, checkoutSession }) {
 
   if (status !== "unconfirmed") {
     totalBillsPriceNotPaid = bills
-      .filter((bill) => !bill.isConfirmPayment)
-      .map((bill) => bill.totalPrice)
-      .reduce((cur, acc) => cur + acc, 0)
+      ?.filter((bill) => !bill.isConfirmPayment)
+      ?.map((bill) => bill.totalPrice)
+      ?.reduce((cur, acc) => cur + acc, 0)
       ?.toFixed(2);
 
     totalBillsPrice = bills
-      .map((bill) => bill.totalPrice)
-      .reduce((cur, acc) => cur + acc, 0)
+      ?.map((bill) => bill.totalPrice)
+      ?.reduce((cur, acc) => cur + acc, 0)
       ?.toFixed(2);
   }
 

@@ -104,6 +104,14 @@ export function generateThankYouEmailHtml({ bookingData, bills }) {
         .join("")
     : "";
 
+  const totalBillsPrice = Boolean(bills.length)
+    ? bills
+        .map((bill) => bill.totalPrice)
+        .reduce((totalPrice, acc) => totalPrice + acc, 0)
+    : 0;
+
+  console.log(totalBillsPrice);
+
   const emailBody = `
     <h2>Dear ${fullName},</h2>
     <p>Thank you for choosing our service. We appreciate your stay with us.</p>
@@ -112,7 +120,9 @@ export function generateThankYouEmailHtml({ bookingData, bills }) {
     </div>
    <div>
     <h3>Your bills:</h3>
-    <h4><strong>Total Bills Price:</strong> $256.65</h4>
+    <h4><strong>Total Bills Price:</strong> ${formatCurrency(
+      totalBillsPrice
+    )}</h4>
     ${billsInfo}
    </div>
     <hr />
